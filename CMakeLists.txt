@@ -13,10 +13,10 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+include_directories(include)
+
 add_executable(main src/main.cpp src/removingVowels.cpp)
 
 add_executable(run_test tests/test.cpp src/removingVowels.cpp)
 
 target_link_libraries(run_test GTest::gtest_main)
-
-target_include_directories(run_test PRIVATE src)

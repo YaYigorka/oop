@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "../include/removingVowels.h"
+#include "removingVowels.h"
 
 
 int main(int argc, char * argv[]) {

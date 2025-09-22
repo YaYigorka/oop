@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/removingVowels.h"
+#include "removingVowels.h"
 #include <string>
 
 
