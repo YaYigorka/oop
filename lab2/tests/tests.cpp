@@ -27,17 +27,17 @@ TEST(DynamicArrayTest, CapacityConstructor) {
 TEST(DynamicArrayTest, StringConstructor) {
     DynamicArray arr("123");
     EXPECT_EQ(arr.getSize(), 3);
-    EXPECT_EQ(arr[0], 3);
-    EXPECT_EQ(arr[1], 2);
-    EXPECT_EQ(arr[2], 1);
+    EXPECT_EQ(arr.takeByIndex(0), 3);
+    EXPECT_EQ(arr.takeByIndex(1), 2);
+    EXPECT_EQ(arr.takeByIndex(2), 1);
 }
 
 TEST(DynamicArrayTest, StringConstructorWithA) {
     DynamicArray arr("1A3");
     EXPECT_EQ(arr.getSize(), 3);
-    EXPECT_EQ(arr[0], 3);
-    EXPECT_EQ(arr[1], 10);
-    EXPECT_EQ(arr[2], 1);
+    EXPECT_EQ(arr.takeByIndex(0), 3);
+    EXPECT_EQ(arr.takeByIndex(1), 10);
+    EXPECT_EQ(arr.takeByIndex(2), 1);
 }
 
 TEST(DynamicArrayTest, CopyConstructor) {
@@ -46,28 +46,10 @@ TEST(DynamicArrayTest, CopyConstructor) {
     
     EXPECT_EQ(arr1.getSize(), arr2.getSize());
     for (size_t i = 0; i < arr1.getSize(); ++i) {
-        EXPECT_EQ(arr1[i], arr2[i]);
+        EXPECT_EQ(arr1.takeByIndex(i), arr2.takeByIndex(i));
     }
 }
 
-TEST(DynamicArrayTest, AssignmentOperator) {
-    DynamicArray arr1("123");
-    DynamicArray arr2;
-    arr2 = arr1;
-    
-    EXPECT_EQ(arr1.getSize(), arr2.getSize());
-    for (size_t i = 0; i < arr1.getSize(); ++i) {
-        EXPECT_EQ(arr1[i], arr2[i]);
-    }
-}
-
-TEST(DynamicArrayTest, SelfAssignment) {
-    DynamicArray arr("123");
-    size_t originalSize = arr.getSize();
-    arr = arr;
-    
-    EXPECT_EQ(arr.getSize(), originalSize);
-}
 
 TEST(DynamicArrayTest, PushBack) {
     DynamicArray arr;
@@ -75,8 +57,8 @@ TEST(DynamicArrayTest, PushBack) {
     arr.push_back(10);
     
     EXPECT_EQ(arr.getSize(), 2);
-    EXPECT_EQ(arr[0], 5);
-    EXPECT_EQ(arr[1], 10);
+    EXPECT_EQ(arr.takeByIndex(0), 5);
+    EXPECT_EQ(arr.takeByIndex(1), 10);
 }
 
 TEST(DynamicArrayTest, PopBack) {
@@ -109,21 +91,21 @@ TEST(DynamicArrayTest, Clear) {
 
 TEST(DynamicArrayTest, IndexOperator) {
     DynamicArray arr("123");
-    EXPECT_EQ(arr[0], 3);
-    EXPECT_EQ(arr[1], 2);
-    EXPECT_EQ(arr[2], 1);
+    EXPECT_EQ(arr.takeByIndex(0), 3);
+    EXPECT_EQ(arr.takeByIndex(1), 2);
+    EXPECT_EQ(arr.takeByIndex(2), 1);
 }
 
 TEST(DynamicArrayTest, IndexOperatorOutOfRange) {
     DynamicArray arr("123");
-    EXPECT_THROW(arr[5], std::out_of_range);
+    EXPECT_THROW(arr.takeByIndex(5), std::out_of_range);
 }
 
 TEST(DynamicArrayTest, ConstIndexOperator) {
     const DynamicArray arr("123");
-    EXPECT_EQ(arr[0], 3);
-    EXPECT_EQ(arr[1], 2);
-    EXPECT_EQ(arr[2], 1);
+    EXPECT_EQ(arr.takeByIndex(0), 3);
+    EXPECT_EQ(arr.takeByIndex(1), 2);
+    EXPECT_EQ(arr.takeByIndex(2), 1);
 }
 
 TEST(DynamicArrayTest, UpSizeDownSize) {
@@ -161,22 +143,6 @@ TEST(ElevenTest, CopyConstructor) {
     EXPECT_EQ(num1.getNumber(), num2.getNumber());
 }
 
-TEST(ElevenTest, AssignmentOperator) {
-    Eleven num1("123", 456);
-    Eleven num2;
-    num2 = num1;
-    
-    EXPECT_EQ(num1.decRead(), num2.decRead());
-    EXPECT_EQ(num1.getNumber(), num2.getNumber());
-}
-
-TEST(ElevenTest, SelfAssignment) {
-    Eleven num("123", 456);
-    num = num;
-    
-    EXPECT_EQ(num.decRead(), 456);
-    EXPECT_EQ(num.getNumber(), "123");
-}
 
 TEST(ElevenTest, Write) {
     Eleven num;
@@ -198,7 +164,7 @@ TEST(ElevenTest, Erase) {
 TEST(ElevenTest, AdditionBasic) {
     Eleven num1("123", 0);
     Eleven num2("456", 0);
-    Eleven result = num1 + num2;
+    Eleven result(add(num1, num2));
     
     EXPECT_EQ(result.getNumber(), "579");
 }
@@ -206,7 +172,7 @@ TEST(ElevenTest, AdditionBasic) {
 TEST(ElevenTest, AdditionWithCarry) {
     Eleven num1("A", 0);
     Eleven num2("1", 0);
-    Eleven result = num1 + num2;
+    Eleven result(add(num1, num2));
     
     EXPECT_EQ(result.getNumber(), "10");
 }
@@ -214,7 +180,7 @@ TEST(ElevenTest, AdditionWithCarry) {
 TEST(ElevenTest, SubtractionBasic) {
     Eleven num1("456", 0);
     Eleven num2("123", 0);
-    Eleven result = num1 - num2;
+    Eleven result(sub(num1, num2));
     
     EXPECT_EQ(result.getNumber(), "333");
 }
@@ -222,7 +188,7 @@ TEST(ElevenTest, SubtractionBasic) {
 TEST(ElevenTest, SubtractionWithBorrow) {
     Eleven num1("100", 0);
     Eleven num2("1", 0);
-    Eleven result = num1 - num2;
+    Eleven result(sub(num1, num2));
     
     EXPECT_EQ(result.getNumber(), "AA");
 }
@@ -231,39 +197,39 @@ TEST(ElevenTest, ComparisonLessThan) {
     Eleven num1("123", 0);
     Eleven num2("456", 0);
     
-    EXPECT_TRUE(num1 < num2);
-    EXPECT_FALSE(num2 < num1);
+    EXPECT_TRUE(less(num1, num2));
+    EXPECT_FALSE(less(num2, num1));
 }
 
 TEST(ElevenTest, ComparisonGreaterThan) {
     Eleven num1("456", 0);
     Eleven num2("123", 0);
     
-    EXPECT_TRUE(num1 > num2);
-    EXPECT_FALSE(num2 > num1);
+    EXPECT_TRUE(more(num1, num2));
+    EXPECT_FALSE(more(num2, num1));
 }
 
 TEST(ElevenTest, ComparisonEqual) {
     Eleven num1("123", 0);
     Eleven num2("123", 0);
     
-    EXPECT_TRUE(num1 == num2);
+    EXPECT_TRUE(equal(num1, num2));
 }
 
 TEST(ElevenTest, ComparisonNotEqual) {
     Eleven num1("123", 0);
     Eleven num2("456", 0);
     
-    EXPECT_FALSE(num1 == num2);
+    EXPECT_FALSE(equal(num1, num2));
 }
 
 TEST(ElevenTest, ComparisonDifferentLengths) {
     Eleven num1("123", 0);
     Eleven num2("1234", 0);
     
-    EXPECT_TRUE(num1 < num2);
-    EXPECT_TRUE(num2 > num1);
-    EXPECT_FALSE(num1 == num2);
+    EXPECT_TRUE(less(num1, num2));
+    EXPECT_TRUE(more(num2, num1));
+    EXPECT_FALSE(equal(num1, num2));
 }
 
 TEST(ElevenTest, GetNumberEmpty) {
@@ -274,7 +240,7 @@ TEST(ElevenTest, GetNumberEmpty) {
 TEST(ElevenTest, ComplexAddition) {
     Eleven num1("A", 0);
     Eleven num2("A", 0);
-    Eleven result = num1 + num2;
+    Eleven result(add(num1, num2));
     
     EXPECT_EQ(result.getNumber(), "19");
 }

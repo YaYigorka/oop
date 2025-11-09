@@ -79,33 +79,7 @@ DynamicArray::~DynamicArray() {
 }
 
 
-DynamicArray& DynamicArray::operator=(const DynamicArray& other) {
-    if (this == &other) {
-        return *this;
-    }
-    
-    try {
-        unsigned char* new_data = new unsigned char[other.capacity];
-        for (size_t i = 0; i < other.size; ++i) {
-            new_data[i] = other.data[i];
-        }
-
-        delete[] data;
-        data = new_data;
-        size = other.size;
-        capacity = other.capacity;
-    }
-    catch(const std::bad_alloc& e) {
-        std::cerr << e.what() << std::endl;
-        throw;
-    }
-
-    
-    return *this;
-}
-
-
-unsigned char& DynamicArray::operator[](size_t index) {
+unsigned char& DynamicArray::takeByIndex(size_t index) {
     if (index < size) {
         return data[index];
     }
@@ -114,7 +88,7 @@ unsigned char& DynamicArray::operator[](size_t index) {
 }
 
 
-const unsigned char& DynamicArray::operator[](size_t index) const {
+const unsigned char& DynamicArray::takeByIndex(size_t index) const {
     if (index < size) {
         return data[index];
     }

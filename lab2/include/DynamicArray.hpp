@@ -14,9 +14,8 @@ public:
     DynamicArray(size_t capacity);
     DynamicArray(const DynamicArray& other);
     ~DynamicArray();
-    DynamicArray& operator=(const DynamicArray& other);
-    unsigned char& operator[](size_t index);
-    const unsigned char& operator[](size_t index) const;
+    unsigned char& takeByIndex(size_t index);
+    const unsigned char& takeByIndex(size_t index) const;
     size_t getSize() const;
     void upSize();
     void downSize();
