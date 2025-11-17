@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 
-#include "../include/coordinates_vector.hpp"
+#include "coordinates_vector.hpp"
 
 
 CoordinatesVector::CoordinatesVector()

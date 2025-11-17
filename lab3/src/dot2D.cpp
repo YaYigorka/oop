@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../include/dot2D.hpp"
+#include "dot2D.hpp"
 
 
 void Dot2D::setDot(double x, double y) {

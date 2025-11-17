@@ -2,10 +2,10 @@
 
 #include <cstddef>
 
-#include "../include/figure.hpp"
-#include "../include/trapezoid.hpp"
-#include "../include/rhombus.hpp"
-#include "../include/pentagon.hpp"
+#include "figure.hpp"
+#include "trapezoid.hpp"
+#include "rhombus.hpp"
+#include "pentagon.hpp"
 
 
 class FigureVector {

@@ -1,6 +1,6 @@
 #include <exception>
 
-#include "../include/figure.hpp"
+#include "figure.hpp"
 
 
 Figure::Figure()

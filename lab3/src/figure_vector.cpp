@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 
-#include "../include/figure_vector.hpp"
+#include "figure_vector.hpp"
 
 
 FigureVector::FigureVector()

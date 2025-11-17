@@ -1,4 +1,4 @@
-#include "../include/rhombus.hpp"
+#include "rhombus.hpp"
 
 
 

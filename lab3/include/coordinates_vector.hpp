@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include "../include/dot2D.hpp"
+#include "dot2D.hpp"
 
 
 class CoordinatesVector {

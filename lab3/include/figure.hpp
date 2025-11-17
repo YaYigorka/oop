@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../include/coordinates_vector.hpp"
+#include "coordinates_vector.hpp"
 
 
 class Figure {

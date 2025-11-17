@@ -1,4 +1,4 @@
-#include "../include/pentagon.hpp"
+#include "pentagon.hpp"
 
 
 
