@@ -17,7 +17,6 @@ public:
     Point<T> geometricCenter() const override;
     operator double() const override;
 
-    // Объявляем операторы дружественными и определяем их прямо здесь
     friend std::ostream& operator<<(std::ostream& os, const Rectangle<T>& r) {
         r.printFigure(os);
         return os;
