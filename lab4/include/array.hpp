@@ -8,7 +8,7 @@
 template<typename T>
 class Array {
 private:
-    std::shared_ptr<T[]> m_data;
+    std::shared_ptr<std::shared_ptr<T>[]> m_data;
     size_t m_size;
     size_t m_capacity;
 public:
