@@ -60,42 +60,46 @@ void movementLogic(AliveNPCSet& alive_npc, gameStatus& running) {
     std::mt19937 gen(rd());
 
     while (running) {
-        std::lock_guard<std::mutex> alive_lock(alive_mutex);
+        {
+            std::lock_guard<std::mutex> alive_lock(alive_mutex);
 
-        for (auto npc : alive_npc) {
+            for (auto npc : alive_npc) {
 
-            if (!npc->isAlive()) {
-                continue;
+                if (!npc->isAlive()) {
+                    continue;
+                }
+
+                int max_move;
+                switch(npc->getType()) {
+                    case KnightErrantType:
+                        max_move = 30;
+                        break;
+                    case DragonType:
+                        max_move = 50;
+                        break;
+                    default:
+                        max_move = 1;
+                        break;
+                }
+
+                std::uniform_int_distribution<int> dist(-max_move, max_move);
+                double dx = dist(gen);
+                double dy = dist(gen);
+
+                int new_x = npc->getX() + dx;
+                int new_y = npc->getY() + dy;
+
+                new_x = new_x > MAP_SIZE ? MAP_SIZE : new_x;
+                new_x = new_x < 0 ? 0 : new_x;
+                new_y = new_y > MAP_SIZE ? MAP_SIZE : new_y;
+                new_y = new_y < 0 ? 0 : new_y;
+
+                npc->setX(new_x);
+                npc->setY(new_y);
             }
-
-            int max_move;
-            switch(npc->getType()) {
-                case KnightErrantType:
-                    max_move = 30;
-                    break;
-                case DragonType:
-                    max_move = 50;
-                    break;
-                default:
-                    max_move = 1;
-                    break;
-            }
-
-            std::uniform_int_distribution<int> dist(-max_move, max_move);
-            double dx = dist(gen);
-            double dy = dist(gen);
-
-            int new_x = npc->getX() + dx;
-            int new_y = npc->getY() + dy;
-
-            new_x = new_x > MAP_SIZE ? MAP_SIZE : new_x;
-            new_x = new_x < 0 ? 0 : new_x;
-            new_y = new_y > MAP_SIZE ? MAP_SIZE : new_y;
-            new_y = new_y < 0 ? 0 : new_y;
-
-            npc->setX(new_x);
-            npc->setY(new_y);
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -110,37 +114,41 @@ int rollDice() {
 
 void battleLogic(AliveNPCSet& alive_npc, DeadNPCSet& dead_npc, gameStatus& running) {
     while (running) {
-        std::lock_guard<std::mutex> alive_lock(alive_mutex);
-        for (auto attaker : alive_npc) {
-            if (!attaker->isAlive()) {
-                continue;
-            }
-
-            for (auto defender : alive_npc) {
-
-                if (attaker->getName() == defender->getName()) {
+        {
+            std::lock_guard<std::mutex> alive_lock(alive_mutex);
+            for (auto attaker : alive_npc) {
+                if (!attaker->isAlive()) {
                     continue;
                 }
 
-                if (!defender->isAlive()) {
-                    continue;
-                }
+                for (auto defender : alive_npc) {
 
-                int attack_power = rollDice();
-                int defender_power = rollDice();
+                    if (attaker->getName() == defender->getName()) {
+                        continue;
+                    }
 
-                if (defender_power >= attack_power) {
-                    continue;
-                }
+                    if (!defender->isAlive()) {
+                        continue;
+                    }
 
-                std::lock_guard<std::mutex> dead_lock(dead_mutex);
-                BattleVisitor battle_visitor(defender);
-                bool result = attaker->accept(battle_visitor);
-                if (result) {
-                    dead_npc.insert(defender);
+                    int attack_power = rollDice();
+                    int defender_power = rollDice();
+
+                    if (defender_power >= attack_power) {
+                        continue;
+                    }
+
+                    std::lock_guard<std::mutex> dead_lock(dead_mutex);
+                    BattleVisitor battle_visitor(defender);
+                    bool result = attaker->accept(battle_visitor);
+                    if (result) {
+                        dead_npc.insert(defender);
+                    }
                 }
             }
         }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -184,8 +192,18 @@ void mapLogic(AliveNPCSet& alive_npc) {
 }
 
 
+void printAliveNPC(AliveNPCSet& alive_npc) {
+    std::cout << "\n\n=====Alive NLP=====\n\n";
+    for (auto& npc : alive_npc) {
+        if (npc->isAlive()) {
+            std::cout << "NAME: " << npc->getName() << " TYPE: " << npc->getType() << std::endl;
+        }
+    }
+}
+
+
 int main() {
-    std::cout << "Starting the game..." << std::endl;
+    std::cout << "===Starting the game===" << std::endl;
     AliveNPCSet alive_npc;
     DeadNPCSet dead_npc;
     create_npc(alive_npc);
@@ -210,8 +228,10 @@ int main() {
     }
     
     running = false;
-    std::cout << "Game over!" << std::endl;
+    std::cout << "=====Game over=====" << std::endl;
     
     movement_thread.join();
     battle_thread.join();
+
+    printAliveNPC(alive_npc);
 }
