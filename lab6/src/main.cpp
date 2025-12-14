@@ -36,7 +36,6 @@ void printDungeon(const std::set<std::shared_ptr<NPC>, NameCompare>& npc_set) {
                   << " | Позиция: (" << npc->getX() << ", " << npc->getY() << ")"
                   << " | Статус: " << status << "\n";
     }
-    std::cout << "================================================\n\n";
 }
 
 void createFromFile(std::set<std::shared_ptr<NPC>, NameCompare>& alive_npc, std::istream& is, Factory& factory) {
@@ -110,16 +109,13 @@ void demonstrateBattle(const std::shared_ptr<NPC>& attacker,
 }
 
 int main() {
-    std::cout << "================================================\n";
     std::cout << "=== BALAGUR FATE 3 - РЕДАКТОР ПОДЗЕМЕЛЬЯ ===\n";
-    std::cout << "================================================\n\n";
     
     Factory factory;
     auto console_log = std::make_shared<TextObserver>();
     auto file_log = std::make_shared<FileObserver>("battle_log.txt");
     
     std::cout << "1. СОЗДАНИЕ НАЧАЛЬНОГО ПОДЗЕМЕЛЬЯ\n";
-    std::cout << "================================\n";
     
     auto knight1 = factory.createKnightErrant("Сэр Гром", 50, 50);
     auto knight2 = factory.createKnightErrant("Ланцелот", 51, 51);
@@ -139,7 +135,6 @@ int main() {
     printDungeon(alive_npc);
     
     std::cout << "\n2. СОХРАНЕНИЕ ПОДЗЕМЕЛЬЯ В ФАЙЛ\n";
-    std::cout << "===============================\n";
     
     std::ofstream out_npc_file("npc_save.txt");
     if (!out_npc_file) {
@@ -155,7 +150,6 @@ int main() {
     std::cout << "Подземелье сохранено в файл 'npc_save.txt'\n";
     
     std::cout << "\n3. ЗАГРУЗКА ПОДЗЕМЕЛЬЯ ИЗ ФАЙЛА\n";
-    std::cout << "===============================\n";
     
     std::set<std::shared_ptr<NPC>, NameCompare> loaded_npc;
     
@@ -171,7 +165,6 @@ int main() {
     printDungeon(loaded_npc);
     
     std::cout << "\n4. ДЕМОНСТРАЦИЯ БОЕВОЙ СИСТЕМЫ\n";
-    std::cout << "==============================\n";
     std::cout << "Дальность атаки: 50 метров\n";
     
     demonstrateBattle(knight1, dragon1, console_log, file_log);
@@ -181,11 +174,9 @@ int main() {
     demonstrateBattle(princess1, dragon1, console_log, file_log);
     
     std::cout << "\n5. ИТОГОВОЕ СОСТОЯНИЕ ПОДЗЕМЕЛЬЯ\n";
-    std::cout << "===============================\n";
     printDungeon(alive_npc);
     
     std::cout << "\n6. СТАТИСТИКА\n";
-    std::cout << "============\n";
     
     int alive_count = 0;
     int dead_count = 0;
@@ -202,9 +193,7 @@ int main() {
     std::cout << "Мёртвых существ: " << dead_count << "\n";
     std::cout << "Лог битв сохранён в файл: 'battle_log.txt'\n";
     
-    std::cout << "\n================================================\n";
     std::cout << "=== ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА ===\n";
-    std::cout << "================================================\n";
     
     return 0;
 }
